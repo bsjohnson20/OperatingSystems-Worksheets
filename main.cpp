@@ -3,8 +3,6 @@
 // #include <ostream.h>
 #include <stdio.h>
 #include <iostream>
-#include <string>
-#include <fstream>
 
 // using namespace std;
 using std::string;
@@ -32,7 +30,8 @@ void task1(){
     std::string stuff(2, '.');
     cout << stuff << endl;
 
-    int x[]= {0,1,2};
+    // task 2
+    int x[]= {10, 30, 2000};
     int *y;
     y = x;
 
@@ -43,8 +42,13 @@ void task1(){
     printf("\nList[%d] == %d", *y, *y);
     printf("\n");
 }
-
 bool compare(int *pointer1, int *pointer2, int length){
+    // if null return false
+    if (pointer1 == nullptr || pointer2 == nullptr)
+    {
+        return false;
+    }
+
     for (id_t i = 0; i < length; i++)
     {
         printf("Pointer 1:2 = %d:%d\n", *pointer1, *pointer2);
@@ -61,7 +65,7 @@ bool compare(int *pointer1, int *pointer2, int length){
     
 }
 
-void readfile(){
+void readfile(){ // readfile task 1.4
     string test;
     ifstream file("test.txt");
     while (getline (file, test  )){
@@ -70,6 +74,8 @@ void readfile(){
     // printf("Hello");
 }
 
+
+// task 1.5
 void swap2(void *x, void *y){
     // Swap x and y
     int temp = *(int*)x;
@@ -77,6 +83,7 @@ void swap2(void *x, void *y){
     *(int*)y = temp;
 }
 
+// task 1.6
 void print_array(int *arr, int width, int height){
     for (int i = 0; i < width; i++)
     {

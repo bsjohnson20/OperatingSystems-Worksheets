@@ -60,6 +60,7 @@
     "stderr": "plaintext",
     "string": "cpp",
     "ostream": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "fstream": "cpp"
   }
 }
