@@ -46,7 +46,11 @@ make task{x}
 
 ![alt text](image-1.png)
 
-### Task 3
+## Code snippets
+
+### 50-100 user num validation loop
+
+![alt text](image-2.png)
 
 
 
