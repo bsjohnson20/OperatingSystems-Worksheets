@@ -21,8 +21,7 @@ asm_main:
     mov ecx, eax
 repeat:
     ; the loop instruction decrements ecx and jumps to the target
-    ; if ecx is not zero. This is a way to repeat a block of code
-    ; a certain number of times.
+    ; if ecx is not zero. Repeat
     mov eax, msg2
     call print_string
     mov eax, input

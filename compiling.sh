@@ -2,6 +2,14 @@
 cd src
 mkdir ../output -p
 task=$1
+runit=$2
+
+# if runit null, set to 0
+if [ -z $runit ]
+then
+    runit=0
+fi
+
 mkdir temp${task} -p
 dir="temp${task}/"
 
@@ -17,5 +25,9 @@ gcc -m32 driver.o task${task}.o asm_io.o -o ../../output/task${task}
 cd ..
 rm -rf temp${task}
 cd ..
-./output/task${task}
+
+if [ $runit == 1 ]
+then
+    ./output/task${task}
+fi
 

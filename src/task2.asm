@@ -72,19 +72,17 @@ call read_char
 mov [name+3], eax
 call read_char
 mov [name+4], eax
-mov eax, msg5
-call print_string
 mov eax, name
-call print_string
+; call print_string
 ; mov eax, msg6
 ; call print_string
 ; call read_int
 ; mov ecx, eax
 
-; test a number is in 50-100 range
 
-jmp rangecorrect
-rangecorrect:
+; test a number is in 50-100 range
+jmp askrange
+askrange:
     mov eax, askint
     call print_string ; ask for an integer
     call read_int
@@ -95,11 +93,11 @@ rangecorrect:
     jg rangewrong
     jmp repeat
 
-rangewrong:
+rangewrong: ; incorrect, therefore print error message and ask again
     mov eax, rangeerror
     call print_string
     call print_nl
-    jmp rangecorrect
+    jmp askrange
 
 repeat: ; repeats the loop x times with printing "hello, {name}"
     mov eax, msg7
