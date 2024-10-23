@@ -89,7 +89,7 @@ segment text public align=1 class=code use32
 %else
 segment .text
 %endif
-	global	read_int, print_int, print_string, read_char
+	global	read_int, print_int, print_string, read_char, read_string
 	global  print_char, print_nl, sub_dump_regs, sub_dump_mem
         global  sub_dump_math, sub_dump_stack
         extern  _scanf, _printf, _getchar, _putchar
@@ -158,21 +158,21 @@ read_char:
 	leave
 	ret
 
-; read_string:
-; 	enter	0,0
-; 	pusha
-; 	pushf
+read_string:
+	enter	0,0
+	pusha
+	pushf
 
-; 	push	eax
-; 	push    dword string_format
-; 	call	_scanf
-; 	pop	ecx
-; 	pop	ecx
+	push	eax
+	push    dword string_format
+	call	_scanf
+	pop	ecx
+	pop	ecx
 
-; 	popf
-; 	popa
-; 	leave
-; 	ret
+	popf
+	popa
+	leave
+	ret
 
 print_char:
 	enter	0,0
