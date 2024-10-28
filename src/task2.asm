@@ -14,6 +14,7 @@ section .data
     ; questions
     askName db "Your name: ", 0
     askNum db "Times to loop: ", 0
+    askNumArray db "Length of array to add (1-100)", 0
 
     ; outputs
     welcome db "Hello and welcome: ", 0
@@ -139,7 +140,7 @@ asm_main:
 
 userInp2:
         ; ask user for number of times to loop
-        mov eax, askNum
+        mov eax, askNumArray
         call print_string
         call read_int
 
