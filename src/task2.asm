@@ -131,13 +131,6 @@ asm_main:
         call print_nl
         loop printLoop
 
-
-
-
-
-
-
-
 userInp2:
         ; ask user for number of times to loop
         mov eax, askNumArray

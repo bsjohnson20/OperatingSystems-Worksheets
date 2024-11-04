@@ -7,7 +7,7 @@ task1:
 
 
 task2: src/task2.asm
-	./compiling.sh 2 0
+	./compiling.sh  2 0
 
 
 

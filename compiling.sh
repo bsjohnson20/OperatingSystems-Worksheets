@@ -1,4 +1,13 @@
 #!/bin/bash
+
+# Takes input args <task_num> <should_run>
+# Compiles task<task_num>
+# Then runs if <should_run> is 1
+
+# Creates a temp directory for compiling and then exports to output to ensure the src is not written into
+
+
+
 cd src
 mkdir ../output -p
 task=$1
