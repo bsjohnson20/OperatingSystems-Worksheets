@@ -164,7 +164,7 @@ The below was it not working. The blue line was incrementing the difference as m
 
 ![image](screenshots/image.png)
 
-![image](screenshots/task2_stack.png)
+![image]("screenshots/task2_stack.png")
 
 
 
