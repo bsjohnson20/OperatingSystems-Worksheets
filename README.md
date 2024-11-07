@@ -26,8 +26,42 @@
           loop printLoop
   ```
 - User input
+```asm
+read_string: ; added function to read a string and store into the passed pointer
+	enter	0,0
+	pusha
+	pushf
+
+	push	eax
+	push    dword string_format
+	call	_scanf ; uses scanf extern to get string
+	pop	ecx
+	pop	ecx
+
+	popf
+	popa
+	leave
+	ret
+```
+
+```asm
+mov eax, nameIn
+call read_string
+```
 - Basic input validation
+```nasm
+cmp eax, 50
+jl isError
+cmp eax, 100
+jg isError
+```
 - Basic compare statements
+```
+cmp eax, 50
+jl isError
+cmp eax, 100
+jg isError
+```
 - Sending input to an assembly file and parsing it to fix the stack task
 
   ```python
