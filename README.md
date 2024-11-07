@@ -13,7 +13,7 @@
 
 - Loops
 
-  ```asm
+  ```nasm
   printLoop: ; loop a welcome message and the user's name
           mov eax, welcome
           call print_string
@@ -26,7 +26,8 @@
           loop printLoop
   ```
 - User input
-```asm
+
+```nasm
 read_string: ; added function to read a string and store into the passed pointer
 	enter	0,0
 	pusha
@@ -44,24 +45,29 @@ read_string: ; added function to read a string and store into the passed pointer
 	ret
 ```
 
-```asm
+```nasm
 mov eax, nameIn
 call read_string
 ```
+
 - Basic input validation
+
 ```nasm
 cmp eax, 50
 jl isError
 cmp eax, 100
 jg isError
 ```
+
 - Basic compare statements
-```
+
+```nasm
 cmp eax, 50
 jl isError
 cmp eax, 100
 jg isError
 ```
+
 - Sending input to an assembly file and parsing it to fix the stack task
 
   ```python
@@ -123,14 +129,14 @@ Open the test.webp and this should display if the array sum is correct. If there
 
 #### Array
 
-```asm
+```nasm
 arrayLen equ 100 ; array length for 100 exactly - this is for the loop to iterate over the array list
 array1 resb 100 ; resb 100 = one byte * 100, max int of 255 (highest bit = 128)
 ```
 
 #### Loops
 
-```asm
+```nasm
 ; The user input is in a loop to keep asking user for a new input until they get something valid
 ; Incorrect flow: userInp > IsError > userInp
 ; Correct flow: userInp > rest of program
@@ -151,7 +157,7 @@ To attempt to fix this, I added a -204 to eax. This when tested with changing nu
 
 **Quickly explaining the python code:**
 
-- There are 2 functions, one for the asm with a jmp to stack, and one without
+- There are 2 functions, one for the nasm with a jmp to stack, and one without
 - Use subprocess to open the file and pass input to
 - Automatically send an input to each required input
 - Parse the output and graph it
@@ -199,8 +205,6 @@ The below was it not working. The blue line was incrementing the difference as m
 ![image](screenshots/image.png)
 
 ![image](screenshots/task2_stack.png)
-
-
 
 ### Code snippets
 
