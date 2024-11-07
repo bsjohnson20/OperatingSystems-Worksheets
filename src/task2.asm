@@ -87,12 +87,12 @@ asm_main:
     ; This then added this to the array addition task which caused a constant 
 
 
-
-    ; mov eax, 0
-    ; mov ebx, 0
-    ; mov [result], eax
-    ; mov [integer1], eax;eax
-    ; mov [integer2], eax
+    ; This code clears the registers and memory locations, fixing array addition task
+    mov eax, 0
+    mov ebx, 0
+    mov [result], eax
+    mov [integer1], eax;eax
+    mov [integer2], eax
 
     ; This worked, I believe it's because the add num is only supposed to take one num < 8 bits
     
