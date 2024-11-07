@@ -1,4 +1,4 @@
-%include "/home/bradley3.johnson/os-root/os-worksheet-1/src/asm_io.inc"
+%include "asm_io.inc"
 
 ; take a number and another from user and add and return to user.
 
