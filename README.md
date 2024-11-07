@@ -158,11 +158,11 @@ The below was it not working. The blue line was incrementing the difference as m
 
 ### Task1
 
-![alt text](image.png)
+![image](image.png)
 
 ### Task 2
 
-![alt text](/home/bradley3.johnson/os-root/os-worksheet-1/screenshots/image.png)
+![image](screenshots/image.png)
 
 ![image](screenshots/task2_stack.png)
 
