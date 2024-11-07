@@ -56,10 +56,11 @@ segment .data
 
 int_format	    db  "%i", 0
 string_format       db  "%s", 0
+
 reg_format	    db  "Register Dump # %d", NL
-		    db  "EAX = %.8X EBX = %.8X ECX = %.8X EDX = %.8X", NL
-                    db  "ESI = %.8X EDI = %.8X EBP = %.8X ESP = %.8X", NL
-                    db  "EIP = %.8X FLAGS = %.4X %s %s %s %s %s %s %s", NL
+		    	db  "EAX = %.8X EBX = %.8X ECX = %.8X EDX = %.8X", NL
+				db  "ESI = %.8X EDI = %.8X EBP = %.8X ESP = %.8X", NL
+				db  "EIP = %.8X FLAGS = %.4X %s %s %s %s %s %s %s", NL
 	            db  0
 carry_flag	    db  "CF", 0
 zero_flag	    db  "ZF", 0
@@ -158,7 +159,19 @@ read_char:
 	leave
 	ret
 
-read_string:
+
+; Custom function
+; Takes variable to read into eax
+; Reads user input and stores it in address pointed to by eax (variable)
+
+; example usage
+;####
+; mov eax, nameIn
+; call read_string
+; mov eax, nameIn
+; call print_string
+;####
+read_string: 
 	enter	0,0
 	pusha
 	pushf

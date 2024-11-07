@@ -26,8 +26,11 @@ section .data
     arrayLen equ 100
 
 section .bss
+    ; user inputs
     nameIn resb 100
-    num resd 1
+
+    ; array vars
+    num resd 1 ; user inp for how many elements to add
     array1 resb 100
 
     ; task 1 to go into two
@@ -39,8 +42,13 @@ section .text
     global _start
     global asm_main
 
+
 asm_main:
-    ; TASK 1 to put into two Slide 22
+
+
+; #################################################################################
+    ; TASK 1: This code will read two integers, add them, and print the result
+    ; to the console. It will also print the two integers to the console.
     pusha
     mov eax, msg1 ; note that this is a pointer!
     call print_string
@@ -68,22 +76,9 @@ asm_main:
     call print_nl
     popa
     mov eax, 0
+; ################################################################################################
+
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ; ask user for name
     mov eax, askName
     call print_string
