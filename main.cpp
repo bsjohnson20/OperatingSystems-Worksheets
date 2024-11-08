@@ -3,6 +3,7 @@
 // #include <ostream.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 
 // using namespace std;
 using std::string;
@@ -10,12 +11,9 @@ using namespace std;
 
 
 
+
 void task1(){
-    /*
-    
-    Increment a pointer
-    
-    */
+
     int n = 0;
     int* n2 = &n;
     printf("n is: %d\n", n);
@@ -41,8 +39,7 @@ void task1(){
     ++y;
     printf("\nList[%d] == %d", *y, *y);
     printf("\n");
-}
-bool compare(int *pointer1, int *pointer2, int length){
+}bool compare(int *pointer1, int *pointer2, int length){
     // if null return false
     if (pointer1 == nullptr || pointer2 == nullptr)
     {
@@ -65,13 +62,13 @@ bool compare(int *pointer1, int *pointer2, int length){
     
 }
 
-void readfile(){ // readfile task 1.4
-    string test;
-    ifstream file("test.txt");
-    while (getline (file, test  )){
-        cout << test << endl;
+void readFile() {
+    std::ifstream file("test.txt");
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::cout << line << std::endl;
     }
-    // printf("Hello");
 }
 
 
@@ -104,7 +101,7 @@ int main(void) {
     bool test = compare(x, y, 3);
     cout << test << endl;
 
-    readfile();
+    readFile();
     printf("\nBefore Swap: %d, %d\n",*x, *y);
     swap2(x,y);
     printf("\nSwapped: %d, %d\n",*x, *y);
