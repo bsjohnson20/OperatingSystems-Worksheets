@@ -115,6 +115,15 @@ make all
 make task{x}
 ```
 
+### Why is my make file so simple?
+
+```bash
+task2: src/task2.asm
+	./compiling.sh  2 0
+```
+
+I opted to write a script that would not only compile all relevant files, would create a temporary directory to store the compiled steps, and then for the final linking send it to the output/ folder, then remove the temporary directory. This way my src directory was kept clean.
+
 ---
 
 **Testing Stack sum**
