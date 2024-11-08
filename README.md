@@ -46,8 +46,8 @@ read_string: ; added function to read a string and store into the passed pointer
 ```
 
 ```nasm
-mov eax, nameIn
-call read_string
+mov eax, nameIn ; nameIn < variable to store the user input
+call read_string ; how to read the string
 ```
 
 - Basic input validation
@@ -167,14 +167,14 @@ To attempt to fix this, I added a -204 to eax. This when tested with changing nu
 What did I change? Just added the following:
 
 ```nasm
-mov eax, 0
-    mov ebx, 0
-    mov [result], eax
-    mov [integer1], eax;eax
-    mov [integer2], eax
+mov eax, 0 ; setting eax to 0 so I don't have to define what type to move into the variables (e.g. word, byte etc)
+mov ebx, 0
+mov [result], eax
+mov [integer1], eax
+mov [integer2], eax
 ```
 
-The below was it not working. The blue line was incrementing the difference as my python for looped incrementing the input sent to the add task.
+The below was it not working. The blue line demonstrates the difference between the correct and my program's output for the array sum task.
 
 ![image](arrayTesting/Array_doNotSet0.png)
 
@@ -198,7 +198,7 @@ The below was it not working. The blue line was incrementing the difference as m
 
 ### Task1
 
-![image](image.png)
+![image](screenshots/image_2.png)
 
 ### Task 2
 
@@ -210,7 +210,7 @@ The below was it not working. The blue line was incrementing the difference as m
 
 50-100 user num validation loop
 
-![alt text](image-2.png)
+![alt text](screenshots/image-2.png)
 
 ## Contributing
 

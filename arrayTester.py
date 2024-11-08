@@ -16,7 +16,13 @@ Ideally it should be a brown line, with a blue line at a constant 0 difference.
 """
 
 
+
 def disabled_task1(): # to be run if task1 was jmp'd over and jumped to array task
+    # /**
+    #  * @brief Runs task2 and parses the output to give a list of the array sum
+    #  * @details This is to be run if task1 was jmp'd over and jumped to array task
+    #  * @return List of the array sum for numbers 50-100
+    #  */
     output = []
     for i in range(50, 101):
         x = sp.run(['output/task2'], input=f'{i}\n', text=True, capture_output=True,timeout=5)
@@ -24,11 +30,16 @@ def disabled_task1(): # to be run if task1 was jmp'd over and jumped to array ta
     return output
         
 def task1():
+    """Parse task 1 and turn into list and return
+
+    Returns:
+        list: list of array sum for numbers 50-100 for looped
+    """
     # compiled regex to find (1-100)num
     p = re.compile(r'\(1-100\)\d+')
     output = []
     for i in range(50, 101):
-        x = sp.run(['output/task2'], input=f'{i}\n{i}\nluna\n53\n{i}', text=True, capture_output=True)
+        x = sp.run(['output/task2'], input=f'{i}\n{i}\nluna\n53\n{i}', text=True, capture_output=True,timeout=5)
         # print(x.stdout);
         # print(x.stderr)
         # print(x.returncode)
@@ -46,6 +57,14 @@ else:
 
 inc = 49
 def num(x):
+    """Returns x with an incrementing number and converted str to int
+
+    Args:
+        x (string): string to convert to int and merged with incrementing number in list
+
+    Returns:
+        list: [incrementing number, x]
+    """
     global inc
     inc+=1
     return [int(inc), int(x)] 
