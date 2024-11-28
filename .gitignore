@@ -1,0 +1,7 @@
+iso/boot/kernel.elf
+kernel.elf
+*.o
+*.bin
+drivers/*.o
+os.iso
+drivers/interrupts.h
