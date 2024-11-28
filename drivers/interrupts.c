@@ -49,9 +49,11 @@ void load_idt2(uint32_t idt_address)
     } idt_descriptor = {sizeof(struct IDTDescriptor) * INTERRUPTS_DESCRIPTOR_COUNT - 1, idt_address};
     asm volatile("lidt %0" : : "m"(idt_descriptor));
 }
+
+/* Interrupt handlers ********************************************************/
+
 void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t interrupt, __attribute__((unused)) struct stack_state stack)
 {
-    write_string_serial("Keyboard interrupt\n");
     uint8_t input;
     uint8_t ascii;
     static uint32_t fe_count = 0;
@@ -62,13 +64,12 @@ void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t i
     case INTERRUPTS_KEYBOARD:
         while ((inb(0x64) & 1))
         {
-            write_string_serial("Keyboard interrupt\n");
             input = keyboard_read_scan_code();
 
             // Debug output
-            /*fb_write_cell(debug_count * 3 + 0, 'x', FB_GREEN, FB_DARK_GREY);
-            fb_write_cell(debug_count * 3 + 1, "0123456789ABCDEF"[input >> 4], FB_GREEN, FB_DARK_GREY);
-            fb_write_cell(debug_count * 3 + 2, "0123456789ABCDEF"[input & 0xF], FB_GREEN, FB_DARK_GREY);*/
+            //fb_write_cell(debug_count * 3 + 0, 'x', 5, 4);
+            //fb_write_cell(debug_count * 3 + 1, "0123456789ABCDEF"[input >> 4], 5, 4);
+            //fb_write_cell(debug_count * 3 + 2, "0123456789ABCDEF"[input & 0xF], 5, 4);
             debug_count++;
 
             // Track FE codes
@@ -91,7 +92,7 @@ void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t i
                             if (BUFFER_COUNT > 0)
                             {
                                 BUFFER_COUNT--;
-                                // fb_write_cell(BUFFER_COUNT, ' ', FB_DARK_GREY, FB_GREEN);
+                                //fb_write_cell(BUFFER_COUNT, ' ', 5, 4);
                             }
                         }
                         else if (ascii == '\n')
@@ -100,7 +101,7 @@ void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t i
                         }
                         else
                         {
-                            // fb_write_cell(BUFFER_COUNT, ascii, FB_DARK_GREY, FB_GREEN);
+                            //fb_write_cell(BUFFER_COUNT, ascii, 5, 4);
                             BUFFER_COUNT++;
                         }
                     }
@@ -118,6 +119,75 @@ void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t i
     }
 }
 
+// void interrupt_handler2(__attribute__((unused)) struct cpu_state cpu, uint32_t interrupt, __attribute__((unused)) struct stack_state stack)
+// {
+//     write_string_serial("Keyboard interrupt\n");
+//     uint8_t input;
+//     uint8_t ascii;
+//     static uint32_t fe_count = 0;
+//     static uint32_t debug_count = 0;
+
+//     switch (interrupt)
+//     {
+//     case INTERRUPTS_KEYBOARD:
+//         while ((inb(0x64) & 1))
+//         {
+//             write_string_serial("Keyboard interrupt\n");
+//             input = keyboard_read_scan_code();
+
+//             // Debug output
+//             /*//fb_write_cell(debug_count * 3 + 0, 'x', 4, 5);
+//             //fb_write_cell(debug_count * 3 + 1, "0123456789ABCDEF"[input >> 4], 4, 5);
+//             //fb_write_cell(debug_count * 3 + 2, "0123456789ABCDEF"[input & 0xF], 4, 5);*/
+//             debug_count++;
+
+//             // Track FE codes
+//             if (input == 0xFE)
+//             {
+//                 fe_count++;
+//                 continue;
+//             }
+
+//             // Only process if it's not a break code
+//             if (!(input & 0x80))
+//             {
+//                 if (input <= KEYBOARD_MAX_ASCII)
+//                 {
+//                     ascii = keyboard_scan_code_to_ascii(input);
+//                     if (ascii != 0)
+//                     {
+//                         if (ascii == '\b')
+//                         {
+//                             if (BUFFER_COUNT > 0)
+//                             {
+//                                 BUFFER_COUNT--;
+//                                 // //fb_write_cell(BUFFER_COUNT, ' ', 5, 4);
+//                             }
+//                         }
+//                         else if (ascii == '\n')
+//                         {
+//                             BUFFER_COUNT = ((BUFFER_COUNT / 80) + 1) * 80;
+//                         }
+//                         else
+//                         {
+//                             // //fb_write_cell(BUFFER_COUNT, ascii, 5, 4);
+//                             BUFFER_COUNT++;
+//                         }
+//                     }
+//                 }
+//             }
+
+//             buffer_index = (buffer_index + 1) % INPUT_BUFFER_SIZE;
+//         }
+
+//         pic_acknowledge(interrupt);
+//         break;
+
+//     default:
+//         break;
+//     }
+// }
+
 void fake_handler(){
     write_string_serial("Fake handler\n");
     // send every single interrupt to pic acknowledge
@@ -134,6 +204,16 @@ void interrupts_install_idt()
 {
     write_string_serial("Installing IDT\n");
 
+    idt.address = (int32_t)&idt_descriptors;
+    idt.size = sizeof(struct IDTDescriptor) * INTERRUPTS_DESCRIPTOR_COUNT;
+    load_idt2((int32_t)&idt);
+
+    /*pic_remap(PIC_PIC1_OFFSET, picPIC_PIC2_OFFSET);*/
+    pic_remap(PIC_1_OFFSET, PIC_2_OFFSET);
+
+    // Unmask keyboard interrupt (IRQ1)
+    outb(0x21, inb(0x21) & ~(1 << 1));
+
     // for (int i = 0; i < INTERRUPTS_DESCRIPTOR_COUNT; i++)
     // {
     //     interrupts_init_descriptor(i, (uint32_t)fake_handler);
@@ -149,22 +229,22 @@ void interrupts_install_idt()
     // interrupts_init_descriptor(INTERRUPTS_KEYBOARD, (uint32_t)interrupt_handler_2);
     
 
-    interrupts_init_descriptor(INTERRUPTS_KEYBOARD, (uint32_t)interrupt_handler_33);
-    interrupts_init_descriptor(1, (uint32_t)interrupt_handler_1);
-    interrupts_init_descriptor(7, (uint32_t)interrupt_handler_7);
-    interrupts_init_descriptor(8, (uint32_t)interrupt_handler_8);
+    // interrupts_init_descriptor(INTERRUPTS_KEYBOARD, (uint32_t)interrupt_handler_33);
+    // interrupts_init_descriptor(1, (uint32_t)interrupt_handler_1);
+    // interrupts_init_descriptor(7, (uint32_t)interrupt_handler_7);
+    // interrupts_init_descriptor(8, (uint32_t)interrupt_handler_8);
 
-    idt.address = (int32_t)&idt_descriptors;
-    idt.size = sizeof(struct IDTDescriptor) * INTERRUPTS_DESCRIPTOR_COUNT;
-    load_idt2((int32_t)&idt);
+    // idt.address = (int32_t)&idt_descriptors;
+    // idt.size = sizeof(struct IDTDescriptor) * INTERRUPTS_DESCRIPTOR_COUNT;
+    // load_idt2((int32_t)&idt);
 
-    /*pic_remap(PIC_PIC1_OFFSET, PIC_PIC2_OFFSET);*/
-    pic_remap(PIC_1_OFFSET, PIC_2_OFFSET);
+    // /*pic_remap(PIC_PIC1_OFFSET, PIC_PIC2_OFFSET);*/
+    // pic_remap(PIC_1_OFFSET, PIC_2_OFFSET);
 
-    // Unmask keyboard interrupt (IRQ1)
-    outb(0x21, inb(0x21) & ~(1 << 1));
+    // // Unmask keyboard interrupt (IRQ1)
+    // outb(0x21, inb(0x21) & ~(1 << 1));
 
-    write_string_serial("############### INSTALLED IDT ######################\n");
+    // write_string_serial("############### INSTALLED IDT ######################\n");
 }
 
 /* Interrupt handlers ********************************************************/

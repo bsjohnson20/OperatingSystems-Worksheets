@@ -60,7 +60,7 @@ section text
 
 		
 
-		call init_pics ; initialize the pics
+		; call init_pics ; initialize the pics
 
 		; setup IDT
 		call interrupts_install_idt

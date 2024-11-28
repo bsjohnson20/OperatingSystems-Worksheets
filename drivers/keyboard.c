@@ -4,39 +4,30 @@
 #define KEYBOARD_DATA_PORT 0x60
 
 #include "keyboard.h"
+#include "io.h"
+
+
+#define KEYBOARD_DATA_PORT 0x60
 
 /** read_scan_code:
- * Reads a scan code from the keyboard
+ *  Reads a scan code from the keyboard
  *
- * @return The scan code (NOT an ASCII character!)
+ *  @return The scan code (NOT an ASCII character!)
  */
-extern uint8_t keyboard_read_scan_code(void)
+
+uint8_t keyboard_read_scan_code(void)
 {
     return inb(KEYBOARD_DATA_PORT);
 }
-extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
+
+uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
 {
     // Ignore key releases (scan codes with bit 7 set)
     if (scan_code & 0x80)
     {
-
-        // extern
-        // {
-        // #include "io.h"
-        // }
-        // #define KBD_DATA_PORT 0x60
-
-        // /** read_scan_code:
-        //  *  Reads a scan code from the keyboard
-        //  *
-        //  *  @return The scan code (NOT an ASCII character!)
-        //  */
-        // extern unsigned char read_scan_code(void)
-        // {
-        //     return inb(KBD_DATA_PORT);
-        // }
         return 0;
     }
+
     // Scan code to ASCII mapping for standard US QWERTY keyboard
     switch (scan_code)
     {
@@ -67,6 +58,7 @@ extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
         return '=';
     case 0x0E:
         return '\b'; // Backspace
+
     // Top letter row
     case 0x10:
         return 'q';
@@ -94,6 +86,7 @@ extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
         return ']';
     case 0x1C:
         return '\n'; // Enter
+
     // Middle letter row
     case 0x1E:
         return 'a';
@@ -119,6 +112,7 @@ extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
         return '\'';
     case 0x29:
         return '`';
+
     // Bottom letter row
     case 0x2B:
         return '\\';
@@ -144,6 +138,7 @@ extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
         return '/';
     case 0x39:
         return ' '; // Space bar
+
     // Numpad
     case 0x37:
         return '*'; // Numpad *
@@ -173,6 +168,7 @@ extern uint8_t keyboard_scan_code_to_ascii(uint8_t scan_code)
         return '0';
     case 0x53:
         return '.';
+
     default:
         return 0; // Unknown scan code
     }
