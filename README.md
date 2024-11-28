@@ -1,4 +1,4 @@
-# Worksheet 1 - Arrays and I/O
+# Worksheet 2 - Arrays and I/O
 
 ### Purpose
 
