@@ -6,6 +6,11 @@
 - Using hardware addresses to interact with the system
 - Writing to the screen
 
+### Quick overview
+
+![image](Worksheet2p2.drawio.png)
+
+
 ### Things learnt
 
 - Basic API means extensions are a lot easier
