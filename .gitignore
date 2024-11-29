@@ -4,4 +4,4 @@ kernel.elf
 *.bin
 drivers/*.o
 os.iso
-drivers/interrupts.h
+
