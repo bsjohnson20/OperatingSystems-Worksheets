@@ -118,6 +118,17 @@ make serial
 
 ### Print to screen
 
+The below image contains tmux, which is a terminal multiplexer, with the serial output on the left and the telnet output on the right.
+
+This means, I can use the serial, and qemu control at the same time. Plus the tmux session creates everything automatically with the script. ./tmux.sh
+
+```bash
+make tmux
+```
+
+
+![image](terminal_output.png)
+
 
 ## Contributing
 
