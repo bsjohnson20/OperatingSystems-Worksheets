@@ -20,6 +20,7 @@
 // This code resets the position variables, the cursor and overwrites the buffer with spaces to clear the screen
 extern void terminal_initialize(void)
 {
+    // keep track of the row and column such that it's easier to keep track of the cursor to write
     terminal_row = 0;
     terminal_column = 0;
     terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
