@@ -1,6 +1,6 @@
 ; We declare the 'kernel_main' label as being external to this file
 ; That's because it's the name of the main C function in 'kernelc'
-extern kernel_main
+
  
 ; We declare the 'start' label as global (accessible from outside this file), since the linker will need to know where it is
 ; In a bit, we'll actually take a look at the code that defines this label
@@ -17,7 +17,7 @@ MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
 CHECKSUM equ -(MAGIC + MBFLAGS)   ; checksum of above, to prove we are multiboot
 
 ; We now start the section of the executable that will contain our Multiboot header
-section multiboot
+section .multiboot
     align 4
 	dd MAGIC
 	dd MBFLAGS
@@ -27,16 +27,12 @@ section multiboot
 KERNEL_STACK_SIZE equ 8192 ; 8KB
 
 
-; EXTERNAL FUNCTIONS
-extern init_gdt
-extern interrupts_install_idt
-extern init_pics
-extern write_serial_num
+extern kernel_main
 
 
 
 ; This section contains data initialised to zeroes when the kernel is loaded
-section bss
+section .bss
 	; Our C code will need a stack to run Here, we allocate 4096 bytes (or 4 Kilobytes) for our stack
 	; We can expand this later if we want a larger stack For now, it will be perfectly adequate
 	align 16
@@ -45,7 +41,7 @@ section bss
 	stack_top:
  
 ; This section contains our actual assembly code to be run when our kernel loads
-section text
+section .text
 	; Here is the 'start' label we mentioned before This is the first code that gets run in our kernel
 	start:
 		; First thing's first: we want to set up an environment that's ready to run C code
@@ -54,69 +50,60 @@ section text
 		mov esp, stack_top ; Set the stack pointer to the top of the stack
 
 
-        ; setup GDT
-        call init_gdt
+		; Worksheet 2: pt1 Task 2
+		extern sum_of_three;
+		extern mult_of_three;
+		extern sub_num;
+
+		extern terminal_initialize
+		extern terminal_putchar
+		call terminal_initialize
+
+		push 1
+		push 2
+		push 3
+		call sum_of_three
+
+		extern asm_display_num
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		push 1
+		push 2
+		push 4
+		call mult_of_three
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		push 1
+		push 2
+		call sub_num
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		; gives time to show the output
+		mov eax, 120
+		sleep2:
+			mov ecx, 499999
+			sleep:
+				loop sleep
+			sub eax, 1
+			CMP eax, 0
+			JNE sleep2
 
 
-		
-
-		; call init_pics ; initialize the pics
-
-		; setup IDT
-		call interrupts_install_idt
-
-		; enable interrupts
-		sti
-
-		; jmp to protected mode
-		jmp 0x08:set_cs
-		
-		set_cs:
-			mov ax, 0x10
-			mov ds, ax
-			mov es, ax
-			mov fs, ax
-			mov gs, ax
-			mov ss, ax
-		
-
-
-		main:
- 
-			extern make_square
-			extern make_triangle
-			extern make_circle
-			extern make_diamond
-
-			extern terminal_initialize
-			call terminal_initialize
-
-			call make_square
-			call make_triangle
-			call make_circle
-			call make_diamond
 
 
 
-		; Now we have a C-worthy (haha!) environment ready to run the rest of our kernel
-		; At this point, we can call our main C function
-		call kernel_main
- 
-		; loop 10000 times. Only then add one to eax, send to serial
-	l2:
-		mov ecx, 100000000
-		count:
-			loop count
-			add eax, 1
-			push eax
-			call write_serial_num
-			
-			pop eax
-			jmp l2
+		; Now that we have a stack, we can call our C function
+		call kernel_main ; Call the 'kernel_main' function in 'kernelc.c'
 
-		; ; If, by some mysterious circumstances, the kernel's C code ever returns, all we want to do is to hang the CPU
-		; hang:
-		; 	; cli      ; Disable CPU interrupts
-		; 	hlt      ; Halt the CPU
-		; 	jmp hang ; If that didn't work, loop around and try again
-		; ; Love you <3
+		; lp:
+		; 	jmp $
+        

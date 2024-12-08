@@ -1,7 +1,7 @@
 
 CC = gcc
 CFLAGS = -m32   -ffreestanding -fno-builtin  -fno-stack-protector \
-             -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
+             -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -Wno-unused-variable -c
 LDFLAGS = -T src/link.ld -melf_i386
 AS = nasm
 ASFLAGS = -f elf
@@ -9,9 +9,10 @@ ASFLAGS = -f elf
 VPATH = src:drivers
 
 # get all .c files in src directory
-C_SOURCES = $(wildcard src/*.c drivers/*.c)
+C_SOURCES = $(wildcard src/*.c drivers/*.c prov_drivers/*.c)
 # get all .s files in src directory
-ASM_SOURCES = $(wildcard src/*.s drivers/*.s)
+ASM_SOURCES = $(wildcard src/*.s drivers/*.s prov_drivers/*.s)
+
 
 
 
@@ -63,7 +64,7 @@ logcpu: os.iso
 	echo "Serial Port: $(tel_ser)"
 	echo "Qemu Monitor Port: $(tel_qem)"
 
-	qemu-system-i386 -serial telnet::4343,server,nowait -curses -monitor telnet::4344,server,nowait -serial mon:stdio -boot d -cdrom os.iso -m 32 -d cpu_reset -D log.txt
+	qemu-system-i386 -serial telnet::4343,server,nowait -display curses -monitor telnet::4344,server,nowait -serial mon:stdio -boot d -cdrom os.iso -m 32 -d cpu_reset -D log.txt
 	reset 
 
 

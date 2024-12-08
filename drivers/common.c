@@ -32,3 +32,19 @@ extern void convert_num_to_string(int num, char *buf)
         buf[i - j - 1] = temp;
     }
 }
+
+int sum_of_three(int arg1, int arg2, int arg3)
+{
+    return arg1 + arg2 + arg3;
+}
+
+int mult_of_three(int arg1, int arg2, int arg3)
+{
+    return arg1 * arg2 * arg3;
+}
+
+int sub_num(int arg1, int arg2)
+{
+    return arg1 - arg2;
+}
+

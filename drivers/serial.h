@@ -1,7 +1,7 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include "io.h"
+#include "../prov_drivers/io.h"
 #include "serial.h"
 #include "common.h"
 #include <stdint.h>

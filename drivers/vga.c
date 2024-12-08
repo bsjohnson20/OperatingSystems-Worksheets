@@ -1,12 +1,10 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
-#include "io.h"
+
 
 
 
 #include "vga.h"
+
+
 
 /* The I/O ports */
 #define FB_COMMAND_PORT 0x3D4
@@ -23,14 +21,18 @@ extern void fb_move_cursor(unsigned short pos)
     outb(FB_DATA_PORT, pos & 0x00FF);
 }
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
-static uint16_t *const VGA_MEMORY = (uint16_t *)0xB8000;
 
-static size_t terminal_row;
-static size_t terminal_column;
-static uint8_t terminal_color;
-static uint16_t *terminal_buffer;
+
+
+
+// void reset_keyboard_buffer(){
+//     for (int i = 0; i < 80; i++)
+//     {
+//         *keyboard_buffer[i] = 0;
+//     }
+//     keyboard_buffer_index = 0;
+    
+// }
 
 extern void terminal_initialize(void)
 {
@@ -46,7 +48,11 @@ extern void terminal_initialize(void)
             terminal_buffer[index] = vga_entry(' ', terminal_color);
         }
     }
+    // update hardware cursor
     fb_move_cursor(0);
+
+    // update buffer
+    reset_keyboard_buffer();
 }
 
 extern void terminal_setcolor(uint8_t color)
@@ -80,32 +86,76 @@ extern void terminal_scroll(int line)
             dst[y * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
         }
     }
+    // clear buffer
+    reset_keyboard_buffer();
 }
 
-extern void terminal_backspace(){
-    if (terminal_column > 0){
+void terminal_backspace(){
+    if (terminal_column > 0)
+    {
         terminal_column--;
-        terminal_putchar(' ');
+        terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
+
+        // delete from keyboard buffer
+        // keyboard_buffer_index--;
+        reset_keyboard_buffer();
     }
-    else if (terminal_row > 0){
+    if (terminal_column == 0 && terminal_row > 0)
+    {
         terminal_row--;
         terminal_column = VGA_WIDTH - 1;
-        terminal_putchar(' ');
-        terminal_column = VGA_WIDTH - 1;
+        // delete from keyboard buffer
+        // keyboard_buffer_index--;
     }
+    fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
 }
 
-extern void terminal_delete_last_line()
+void terminal_delete_last_line()
 {
-    size_t x;
-    uint16_t *ptr;
-
-    for (x = 0; x < VGA_WIDTH; x++)
+    // delete this line if col greater than 0
+    if (terminal_column > 0)
     {
-        ptr = VGA_MEMORY + (VGA_WIDTH * (VGA_HEIGHT - 1)) + x;
-        *ptr = vga_entry(' ', terminal_color);
+        terminal_column = VGA_WIDTH;
+    }
+    else
+    {
+        terminal_row--;
+        terminal_column = VGA_WIDTH;
+    }
+    while (terminal_column > 0)
+    {
+        terminal_column--;
+        terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
+        fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+    } 
+    fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+}
+
+
+
+extern void terminal_write(const char *data, size_t size)
+{
+    for (size_t i = 0; i < size; i++){
+        terminal_putchar(data[i]);
+        // *keyboard_buffer[keyboard_buffer_index] = data[i];
+        // keyboard_buffer_index++;
     }
 }
+
+extern void terminal_writestring(const char *data)
+{
+    terminal_write(data, strlen(data));
+}
+
+extern void terminal_writeint(int data)
+{
+    char str[20];
+    convert_num_to_string(data, str);
+    
+    terminal_writestring(str);
+}
+
+
 
 extern void terminal_putchar(char c)
 {
@@ -116,7 +166,7 @@ extern void terminal_putchar(char c)
         terminal_scroll(1);
         terminal_row = VGA_HEIGHT - 1;
         // update the hardware cursor
-        fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+       
     }
 
     // if (++terminal_column == VGA_WIDTH)
@@ -137,19 +187,32 @@ extern void terminal_putchar(char c)
         terminal_row++;
 
         // increment hardware cursor using io to new line
-        fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+        reset_keyboard_buffer();
 
         break;
     }
 
+
+
     default: // Normal characters just get displayed and then increment the column
     {
+        if (terminal_column >= VGA_WIDTH)
+        {
+            terminal_column = 0;
+            terminal_row++;
+        }
+
         const size_t index = (VGA_WIDTH * terminal_row) + terminal_column; // Like before, calculate the buffer index
         terminal_buffer[index] = vga_entry(c, terminal_color);
         terminal_column++;
 
+        // add to keyboard buffer
+        // *keyboard_buffer[keyboard_buffer_index] = c;
+        // keyboard_buffer_index++;
+
+
         // increment hardware cursor using io
-        fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+        
         break;
     }
     }
@@ -163,24 +226,29 @@ extern void terminal_putchar(char c)
 
     
 
-    
+    fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
+
+    // test for cursor pos
+    // write_serial_num(terminal_row * VGA_WIDTH + terminal_column);
+    // terminal_writeint(terminal_row * VGA_WIDTH + terminal_column);
 }
 
-extern void terminal_write(const char *data, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-        terminal_putchar(data[i]);
-}
-
-extern void terminal_writestring(const char *data)
-{
-    terminal_write(data, strlen(data));
-}
-
-extern void terminal_writeint(int data)
-{
+void asm_display_num(int num){
     char str[20];
-    convert_num_to_string(data, str);
-    
+    convert_num_to_string(num, str);
     terminal_writestring(str);
 }
+
+
+
+// legacy
+char *fb = (char *) 0x000B8000;
+void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg)
+    {
+        i++;
+        fg++;
+        bg++;
+        terminal_putchar(c);
+        // fb[i] = c;
+        // fb[i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
+    }

@@ -6,9 +6,35 @@
 - Using hardware addresses to interact with the system
 - Writing to the screen
 
-### Quick overview
+### Minor thing
 
-![image](Worksheet2p2.drawio.png)
+With the makefile to run, use "make tmux". 
+
+Also, running curses has been adapted to -display curses, due to running inside a docker container I created.
+This docker container was created with the purpose of connecting vscode and having all the requirements to run the os, without needing to install anything on the host machine.
+To also bypass UWE CSCT timeouts as well.
+
+Docker image provided at: https://hub.docker.com/repository/docker/lunachocken/os_uwe/
+
+```yml
+services:
+  vscode:
+    image: lunachocken/os_uwe
+    tty: true
+    stdin_open: true
+    ports:
+      - 5000:22 # ssh
+    volumes:
+      - code:/home/luna/code_volume
+volumes:
+  code:
+```
+
+running: 
+```bash
+sudo docker compose up -d
+ ```
+
 
 
 ### Things learnt
@@ -129,6 +155,119 @@ make tmux
 
 ![image](terminal_output.png)
 
+### Task 2 - C funcs in assembly
+```For this task you should read chapter 3 of the OS book and extend your kernel so that it can call C
+functions. As well as implementing the function sum_of_three, outlined in the chapter, you should
+implement and test at least two other C functions, although what those functions do is up to you.
+Exend your makefile to work with this new structure, in particular, add support to transfer control to
+C from your loader.asm, developed in task 1.
+```
+
+This code below pushes arguments three separate c functions, then calls a display function to show the output on the screen.
+There's also a nested for loop designed to give time to show the output.
+
+```asm
+extern sum_of_three;
+		extern mult_of_three;
+		extern sub_num;
+
+		extern terminal_initialize
+		extern terminal_putchar
+		call terminal_initialize
+
+		push 1
+		push 2
+		push 3
+		call sum_of_three
+
+		extern asm_display_num
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		push 1
+		push 2
+		push 4
+		call mult_of_three
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		push 1
+		push 2
+		call sub_num
+		push eax
+		call asm_display_num
+		push '\\'
+		call terminal_putchar
+
+		; gives time to show the output
+		mov eax, 120
+		sleep2:
+			mov ecx, 499999
+			sleep:
+				loop sleep
+			sub eax, 1
+			CMP eax, 0
+			JNE sleep2
+```
+
+#### Output png
+Add, Multiply, Subtract
+
+![image](FuncsOutput.png)
+
+
+### Task 3 - Framebuffer
+```
+For this task we are going to focus on adding some simple I/O, following chapter 4 of our OS book. An
+OS, or any program, the lack of IO makes it pretty basic and the ability to interact with the world opens
+up access to dynamically changing a programs behavour. The simplest form of I/O is the framebuffer
+so we can display or output text to the console. In part 2 of the worksheet, we will explore the other
+basic, but key I/O device, the keyboard.
+```
+
+We have a few functions used to display text on the screen. The code below is a simple example of how to write to the screen.
+
+```c
+// writes a string to the screen, strlen fetches the length to loop through
+extern void terminal_writestring(const char *data)
+{
+    terminal_write(data, strlen(data));
+}
+
+// uses a common library I made to convert numbers to strings and then write them to the screen
+extern void terminal_writeint(int data)
+{
+    char str[20];
+    convert_num_to_string(data, str);
+    
+    terminal_writestring(str);
+}
+
+// This func, tests for enter, backspace and normal characters
+// It also increments the row and column to keep track of the cursor
+// Updating the cursor position with another function
+extern void terminal_putchar(char c);
+```
+
+### Output screen terminal:
+
+Image of the terminal output
+
+![image](terminal.png)
+
+## Worksheet PT2
+
+Keyboard input. (d was used to delete the entire line and thus can't be typed atm)
+
+![image](terminal_keyboard.png)
+
+Serial output
+
+![image](serial_keyboard.png)
 
 ## Contributing
 

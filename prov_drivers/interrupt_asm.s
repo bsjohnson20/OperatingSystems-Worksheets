@@ -1,6 +1,6 @@
 ;Generic Interrupt Handler
 ;
-extern interrupt_handler2
+extern interrupt_handler
 
 %macro no_error_code_interrupt_handler 1
 global interrupt_handler_%1
@@ -28,7 +28,7 @@ common_interrupt_handler:               ; the common parts of the generic interr
 	push	edi
 
         ; call the C function
-        call    interrupt_handler2
+        call    interrupt_handler
 
         ; restore the registers
 	pop	edi
@@ -46,6 +46,3 @@ common_interrupt_handler:               ; the common parts of the generic interr
 	iret
 
 no_error_code_interrupt_handler	33	; create handler for interrupt 1 (keyboard)
-no_error_code_interrupt_handler	8	; create handler for interrupt 1 (keyboard)
-no_error_code_interrupt_handler	7	; create handler for interrupt 1 (keyboard)
-no_error_code_interrupt_handler	1	; create handler for interrupt 1 (keyboard)

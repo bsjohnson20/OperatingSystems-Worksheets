@@ -24,7 +24,7 @@ sleep 0.2
 tmux send-keys -t "tmux-session:0.2" "while [ 1 == 1 ]; do telnet localhost ${TEL_QEM}; sleep 5; done" C-m
 
 # right
-tmux send-keys -t "tmux-session:0.1" "while [ 1==1 ]; do telnet localhost ${TEL_SER}; sleep 0.1; done" C-m
+tmux send-keys -t "tmux-session:0.1" "while [ 1==1 ]; do telnet localhost ${TEL_SER}; sleep; done" C-m
 
 # Attach to the session
 tmux attach-session -t "tmux-session"
