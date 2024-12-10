@@ -56,7 +56,7 @@ section .text
 		extern sub_num;
 
 		extern terminal_initialize
-		extern terminal_putchar
+		extern terminal_putc
 		call terminal_initialize
 
 		push 1
@@ -68,7 +68,7 @@ section .text
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		push 1
 		push 2
@@ -77,7 +77,7 @@ section .text
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		push 1
 		push 2
@@ -85,7 +85,7 @@ section .text
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		; gives time to show the output
 		mov eax, 120

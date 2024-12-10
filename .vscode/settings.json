@@ -62,6 +62,7 @@
     "serial.h": "c",
     "stdint.h": "c",
     "common.h": "c",
-    "asm_funcs.h": "c"
+    "asm_funcs.h": "c",
+    "keyboard.h": "c"
   }
 }

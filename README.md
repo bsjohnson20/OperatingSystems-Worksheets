@@ -14,6 +14,9 @@ Also, running curses has been adapted to -display curses, due to running inside 
 This docker container was created with the purpose of connecting vscode and having all the requirements to run the os, without needing to install anything on the host machine.
 To also bypass UWE CSCT timeouts as well.
 
+Given the issues with cpu's being maxed out by people's qemu instances, I've added a hlt instruction to prevent usage when not actively used.
+This massively reduces the cpu usage of the qemu instances. As it's not constantly running as fast as it can.
+
 Docker image provided at: https://hub.docker.com/repository/docker/lunachocken/os_uwe/
 
 ```yml
@@ -172,7 +175,7 @@ extern sum_of_three;
 		extern sub_num;
 
 		extern terminal_initialize
-		extern terminal_putchar
+		extern terminal_putc
 		call terminal_initialize
 
 		push 1
@@ -184,7 +187,7 @@ extern sum_of_three;
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		push 1
 		push 2
@@ -193,7 +196,7 @@ extern sum_of_three;
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		push 1
 		push 2
@@ -201,7 +204,7 @@ extern sum_of_three;
 		push eax
 		call asm_display_num
 		push '\\'
-		call terminal_putchar
+		call terminal_putc
 
 		; gives time to show the output
 		mov eax, 120
@@ -250,7 +253,7 @@ extern void terminal_writeint(int data)
 // This func, tests for enter, backspace and normal characters
 // It also increments the row and column to keep track of the cursor
 // Updating the cursor position with another function
-extern void terminal_putchar(char c);
+extern void terminal_putc(char c);
 ```
 
 ### Output screen terminal:

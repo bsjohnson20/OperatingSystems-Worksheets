@@ -67,7 +67,7 @@ extern void terminal_scroll(int line);
 extern void terminal_initialize(void);
 extern void terminal_delete_last_line();
 void terminal_backspace();
-extern void terminal_putchar(char c);
+extern void terminal_putc(char c);
 
 extern void terminal_setcolor(uint8_t color);
 extern void terminal_write(const char *data, size_t size);

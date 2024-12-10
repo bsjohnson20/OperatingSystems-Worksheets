@@ -40,7 +40,7 @@ void setup() {
 extern void kernel_main()
 {
 
-    setup();
+    setup(); // Serial, Interrupts and Terminal setup
     
 
     // We're here! Let's initiate the terminal and display a message to show we got here.
@@ -52,7 +52,7 @@ extern void kernel_main()
     terminal_writestring("Hello, World!\n");
     terminal_setcolor(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
 
-    terminal_writestring("Welcome to the kernel.\n");
+    terminal_writestring("Welcome to the kernel.\nHold a key to activate keyboard input.\n");
     terminal_writestring("\n\n\n\nI LOVE PONIES!");
 
     terminal_setcolor(vga_entry_color(VGA_COLOR_MAGENTA, VGA_COLOR_BLACK));
@@ -67,13 +67,13 @@ extern void kernel_main()
 
 
     while (1==1){
-        asm volatile("hlt");
+        asm volatile("hlt"); // wait for the next interrupt
         // int big = 0;
         // char c;
         // getc(&c);
         // char* s = "Key Pressed: ";
         // s[12] = c;
-        // // terminal_putchar(c);
+        // // terminal_putc(c);
         // terminal_writestring(". >:)");
         // // write_string_serial("Key Pressed: ");
         // write_serial(c);

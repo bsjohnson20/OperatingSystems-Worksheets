@@ -174,10 +174,10 @@ void interrupt_handler(__attribute__((unused)) struct cpu_state cpu, u32int inte
                             }
                             else if (ascii == '\n') {
                                 reset_keyboard_buffer();
-                                terminal_putchar('\n'); // BUFFER_COUNT = ((BUFFER_COUNT / 80) + 1) * 80;
+                                terminal_putc('\n'); // BUFFER_COUNT = ((BUFFER_COUNT / 80) + 1) * 80;
                             }
                             else {
-                                terminal_putchar(ascii);
+                                terminal_putc(ascii);
                                 keyboard_buffer[buffer_index] = ascii;
 
                                 serial_keyboard_buffer();

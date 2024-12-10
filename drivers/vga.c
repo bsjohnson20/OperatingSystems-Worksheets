@@ -36,6 +36,7 @@ extern void fb_move_cursor(unsigned short pos)
 
 extern void terminal_initialize(void)
 {
+    // Clear screen, set color, and set buffer, and set cursor to 0,0
     terminal_row = 0;
     terminal_column = 0;
     terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
@@ -57,11 +58,13 @@ extern void terminal_initialize(void)
 
 extern void terminal_setcolor(uint8_t color)
 {
+    // Purely for external use
     terminal_color = color;
 }
 
 extern void terminal_putentryat(unsigned char c, uint8_t color, size_t x, size_t y)
 {
+    // forced position character
     const size_t index = y * VGA_WIDTH + x;
     terminal_buffer[index] = vga_entry(c, color);
 }
@@ -75,6 +78,7 @@ extern void terminal_scroll(int line)
     {
         for (size_t x = 0; x < VGA_WIDTH; x++)
         {
+            // Using pointers, copy the line up one row
             dst[y * VGA_WIDTH + x] = src[y * VGA_WIDTH + x];
         }
     }
@@ -100,6 +104,7 @@ void terminal_backspace(){
         // keyboard_buffer_index--;
         reset_keyboard_buffer();
     }
+    // If not on first line and column is 0, move up one row and start at the end of the line
     if (terminal_column == 0 && terminal_row > 0)
     {
         terminal_row--;
@@ -128,6 +133,7 @@ void terminal_delete_last_line()
         terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
         fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
     } 
+    // lastly move cursor to the beginning of the line
     fb_move_cursor(terminal_row * VGA_WIDTH + terminal_column);
 }
 
@@ -135,8 +141,9 @@ void terminal_delete_last_line()
 
 extern void terminal_write(const char *data, size_t size)
 {
+    // loops through a char array and converts to chars to send into terminal_putc
     for (size_t i = 0; i < size; i++){
-        terminal_putchar(data[i]);
+        terminal_putc(data[i]);
         // *keyboard_buffer[keyboard_buffer_index] = data[i];
         // keyboard_buffer_index++;
     }
@@ -148,6 +155,7 @@ extern void terminal_writestring(const char *data)
 }
 
 extern void terminal_writeint(int data)
+// Takes an int and prints to screen
 {
     char str[20];
     convert_num_to_string(data, str);
@@ -157,7 +165,7 @@ extern void terminal_writeint(int data)
 
 
 
-extern void terminal_putchar(char c)
+extern void terminal_putc(char c)
 {
 
     // What happens if we get past the last row? We need to scroll the terminal
@@ -217,6 +225,7 @@ extern void terminal_putchar(char c)
     }
     }
 
+    // Doesn't work
     // // What happens if we get past the last column? We need to reset the column to 0, and increment the row to get to a new line
     // if (terminal_column >= VGA_WIDTH)
     // {
@@ -248,7 +257,7 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg)
         i++;
         fg++;
         bg++;
-        terminal_putchar(c);
+        terminal_putc(c);
         // fb[i] = c;
         // fb[i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
     }
