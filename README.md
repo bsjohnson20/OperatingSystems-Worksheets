@@ -33,7 +33,7 @@ read_string: ; added function to read a string and store into the passed pointer
 	pusha
 	pushf
 
-	push	eax
+	push	eax ; Takes eax to store the pointer address to name variable
 	push    dword string_format
 	call	_scanf ; uses scanf extern to get string
 	pop	ecx
