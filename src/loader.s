@@ -49,6 +49,11 @@ section .text
 		; Please note that on x86, the stack grows DOWNWARD This is why we start at the top
 		mov esp, stack_top ; Set the stack pointer to the top of the stack
 
+		mov eax, 0xCAFEBABE
+
+		mov ecx, 50000
+		sleep5:
+			loop sleep5
 
 		; Worksheet 2: pt1 Task 2
 		extern sum_of_three;
@@ -87,15 +92,19 @@ section .text
 		push '\\'
 		call terminal_putc
 
-		; gives time to show the output
-		mov eax, 120
-		sleep2:
-			mov ecx, 499999
-			sleep:
-				loop sleep
-			sub eax, 1
-			CMP eax, 0
-			JNE sleep2
+		mov ecx, 50000
+		sleep6:
+			loop sleep6
+
+		; ; gives time to show the output
+		; mov eax, 120
+		; sleep2:
+		; 	mov ecx, 499999
+		; 	sleep:
+		; 		loop sleep
+		; 	sub eax, 1
+		; 	CMP eax, 0
+		; 	JNE sleep2
 
 
 

@@ -64,7 +64,7 @@ logcpu: os.iso
 	echo "Serial Port: $(tel_ser)"
 	echo "Qemu Monitor Port: $(tel_qem)"
 
-	qemu-system-i386 -serial telnet::4343,server,nowait -display curses -monitor telnet::4344,server,nowait -serial mon:stdio -boot d -cdrom os.iso -m 32 -d cpu_reset -D log.txt
+	qemu-system-i386 -serial telnet::4343,server,nowait -display curses -monitor telnet::4344,server,nowait -serial mon:stdio -boot d -cdrom os.iso -m 32 -d cpu -D log.txt
 	reset 
 
 
